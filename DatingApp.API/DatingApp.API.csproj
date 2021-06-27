@@ -6,5 +6,8 @@
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="5.0.6"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="5.0.6"/>
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="5.0.6"/>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="6.11.1"/>
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="3.1.16"/>
+    <PackageReference Include="Microsoft.AspNetCore.App" Version="3.0.0-preview3-19153-02"/>
   </ItemGroup>
 </Project>
