@@ -12,8 +12,9 @@ using Microsoft.IdentityModel.Tokens;
 
 namespace DatingApp.API.Controllers
 {
-    //[ApiController]
+    
     [Route("api/[controller]")]
+    [ApiController]
     public class AuthController : ControllerBase
     {
         private readonly IAuthRepository _repo;
@@ -66,7 +67,7 @@ namespace DatingApp.API.Controllers
                 Subject = new ClaimsIdentity(claims),
                 Expires = DateTime.Now.AddDays(1),
                 SigningCredentials = creds
-            };
+            }; 
 
             var tokenHandler = new  JwtSecurityTokenHandler();
 
