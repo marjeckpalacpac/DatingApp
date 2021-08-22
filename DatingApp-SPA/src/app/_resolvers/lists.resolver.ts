@@ -8,14 +8,15 @@ import { UserService } from '../_services/user.service';
 
 @Injectable()
 
-export class MemberLIstResolver implements Resolve<User[]> {
+export class ListsResolver implements Resolve<User[]> {
     pageNumber = 1;
     pageSize = 6;
+    likesParam = 'Likers';
 
     constructor(private userSerivice: UserService, private router: Router, private alertify: AlertifyService) {}
 
     resolve(route: ActivatedRouteSnapshot): Observable<User[]>{
-        return this.userSerivice.getUsers(this.pageNumber, this.pageSize).pipe(
+        return this.userSerivice.getUsers(this.pageNumber, this.pageSize, null, this.likesParam).pipe(
             catchError(error => {
                 this.alertify.error('Problem retrieving data');
                 this.router.navigate(['/home']);
