@@ -31,10 +31,25 @@ namespace DatingApp.API
 
         public IConfiguration Configuration { get; }
 
+        // public void ConfigureDevelopmentServices(IServiceCollection services)
+        // {
+        //     services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+        //     ConfigureServices(services);
+        // }
+
+        public void ConfigureProductionServices(IServiceCollection services)
+        {
+            services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+
+            ConfigureServices(services);
+        }
+
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<DataContext>(x => x.UseSqlite(Configuration.GetConnectionString("DefaultConnection")));
+            //  services.AddDbContext<DataContext>(x => x.UseSqlServer(Configuration.GetConnectionString("DefaultConnection")));
+            // services.AddDbContext<DataContext>(x => x.UseSqlite("Data Source = DatingApp.db"));
             services.AddControllers().AddNewtonsoftJson(opt => {
                 opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
                 });
@@ -42,10 +57,12 @@ namespace DatingApp.API
         //     services.AddMvc().SetCompatibilityVersion(CompatibilityVersion.Version_2_1).AddNewtonsoftJson(opt => {
         //     opt.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
         // });
+            // services.AddMvc(option => option.EnableEndpointRouting = false);
             services.AddCors();
             services.Configure<CloudinarySettings>(Configuration.GetSection("CloudinarySettings"));
             services.AddScoped<IAuthRepository,AuthRepository>();
             services.AddScoped<IDatingRepository,DatingRepository>();
+             services.AddScoped<DbContext, DataContext>();
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>{
                 options.TokenValidationParameters = new TokenValidationParameters
                 {
@@ -85,13 +102,19 @@ namespace DatingApp.API
             app.UseCors(x => x.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader());
             app.UseAuthentication();
             app.UseRouting();
-
+            app.UseDefaultFiles(); //look for something called index.html
+            app.UseStaticFiles(); // automatically look inside the folder called wwwroot for the content inside
             app.UseAuthorization();
-
+            // app.UseEndpoints(endpoints =>
+            // {
+            //     endpoints.MapControllers();
+            // });
+            //app.MVC() to use the MapFallback use instead the app.UseEndpoints if in .net core ^3
             app.UseEndpoints(endpoints =>
             {
-                endpoints.MapControllers();
+                 endpoints.MapFallbackToController("Index", "Fallback");
             });
+            
         }
     }
 }
